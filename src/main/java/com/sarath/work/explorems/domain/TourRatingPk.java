@@ -1,5 +1,7 @@
 package com.sarath.work.explorems.domain;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
@@ -11,6 +13,7 @@ import java.io.Serializable;
  * Created by Mary Ellen Bowman
  */
 @Embeddable
+@Data
 public class TourRatingPk implements Serializable {
     @ManyToOne
     private Tour tour;
@@ -32,13 +35,6 @@ public class TourRatingPk implements Serializable {
         this.customerId = customerId;
     }
 
-    public Tour getTour() {
-        return tour;
-    }
-
-    public Integer getCustomerId() {
-        return customerId;
-    }
 
     @Override
     public boolean equals(Object o) {

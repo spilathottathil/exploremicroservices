@@ -1,10 +1,15 @@
 package com.sarath.work.explorems.repo;
 
 import com.sarath.work.explorems.domain.TourRating;
+import com.sarath.work.explorems.domain.TourRatingPk;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(exported = false)
-public interface TourRatingRepository {
-    TourRating findByPkTourIdAndPkCustomerId(Integer tourId, Integer customerId);
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
 
+@RepositoryRestResource(exported = false)
+public interface TourRatingRepository extends CrudRepository<TourRating, TourRatingPk> {
+    TourRating findByPkTourIdAndPkCustomerId(Integer tourId, Integer customerId);
+    List<TourRating> findByPkTourId(Integer tourId);
 }

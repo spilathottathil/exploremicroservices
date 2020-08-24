@@ -23,7 +23,6 @@ public interface TourRepository  extends PagingAndSortingRepository<Tour,Integer
 
     Page<Tour> findByTourPackageCode(@Param("code") String code, Pageable pageable);
 
-    Tour findOne(Integer tourId);
 
     @Override
     @RestResource(exported = false)

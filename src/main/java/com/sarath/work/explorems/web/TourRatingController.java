@@ -3,20 +3,15 @@ package com.sarath.work.explorems.web;
 
 import com.sarath.work.explorems.domain.Tour;
 import com.sarath.work.explorems.domain.TourRating;
+import com.sarath.work.explorems.domain.TourRatingPk;
 import com.sarath.work.explorems.repo.TourRatingRepository;
 import com.sarath.work.explorems.repo.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.AbstractMap;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +33,28 @@ public class TourRatingController {
 
     }
 
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createTourRating(@PathVariable(value = "tourId") int tourId, @RequestBody @Validated RatingDto ratingDto){
+        Tour tour =   verifyTour(tourId);
+        TourRatingPk pk = new TourRatingPk(tour,ratingDto.getCustomerId());
+        tourRatingRepository.save(new TourRating(pk,ratingDto.getScore(),ratingDto.getComment()));
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public List<RatingDto> getAllTourRating(@PathVariable(value = "tourId") int tourId){
+        verifyTour(tourId);
+       return tourRatingRepository.findByPkTourId(tourId).stream().map( this::toDto).collect(Collectors.toList());
+    }
+
+    @RequestMapping(method = RequestMethod.GET,path = "/average")
+    public AbstractMap.SimpleEntry<String, Double> getScoreAverage(@PathVariable(value = "tourId") int tourId) {
+        verifyTour(tourId);
+        List<TourRating> tourRatings =   tourRatingRepository.findByPkTourId(tourId);
+     OptionalDouble average = tourRatings.stream().mapToInt(TourRating::getScore).average();
+     return new AbstractMap.SimpleEntry<String,Double>("average", average.isPresent() ? average.getAsDouble() : null);
+    }
 
     /**
      * Convert the TourRating entity to a RatingDto
