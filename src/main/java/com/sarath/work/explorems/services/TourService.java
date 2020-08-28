@@ -9,6 +9,7 @@ import com.sarath.work.explorems.repo.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,9 +28,8 @@ public class TourService {
     public Tour createTour(String title, String description, String blurb, Integer price, String duration, String bullets,
                            String keywords, String tourPackageCode, Difficulty difficulty, Region region){
 
-        TourPackage tPackage = tourPackageRepository.findByName(tourPackageCode);
-
-        if(null == tPackage) throw new RuntimeException("Tour package does not exist "+tourPackageCode);
+        TourPackage tPackage = tourPackageRepository.findByName(tourPackageCode).
+                orElseThrow(() -> new RuntimeException("Tour package does not exist " + tourPackageCode));
 
        return tourRepository.save(new Tour(title,description,blurb,price,duration,bullets,keywords,tPackage,difficulty,region));
     }
